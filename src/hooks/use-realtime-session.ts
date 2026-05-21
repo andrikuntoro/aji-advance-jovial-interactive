@@ -298,6 +298,19 @@ export function useRealtimeSession() {
     }
   }, [store]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Switch to mock mode ────────────────────────────────
+  const switchToMockMode = useCallback(() => {
+    if (clientRef.current) {
+      clientRef.current.disconnect();
+      clientRef.current = null;
+    }
+    store.setMockMode(true);
+    store.setError(null);
+    store.setConnectionState("active");
+    startTimer();
+    startInactivityWatcher();
+  }, [store, startTimer, startInactivityWatcher]);
+
   // ── End session ────────────────────────────────────────
   const endSession = useCallback(async () => {
     store.setConnectionState("ending");
@@ -323,5 +336,5 @@ export function useRealtimeSession() {
     };
   }, [stopAllTimers]);
 
-  return { startSession, endSession, toggleMute, sendMockMessage };
+  return { startSession, endSession, toggleMute, sendMockMessage, switchToMockMode };
 }

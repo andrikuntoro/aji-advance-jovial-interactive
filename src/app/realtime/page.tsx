@@ -221,7 +221,7 @@ function ScenarioSelector({
 function ActiveSession({ onGoBack, customContext }: { onGoBack: () => void; customContext?: any }) {
   const router = useRouter();
   const { lang } = useI18n();
-  const { endSession, toggleMute, sendMockMessage } = useRealtimeSession();
+  const { endSession, toggleMute, sendMockMessage, switchToMockMode } = useRealtimeSession();
   const { connectionState, emotion, isAiSpeaking, transcript, error, config, isMockMode } = useRealtimeStore();
   const [mockInput, setMockInput] = useState("");
   const [mockSending, setMockSending] = useState(false);
@@ -284,17 +284,17 @@ function ActiveSession({ onGoBack, customContext }: { onGoBack: () => void; cust
 
           <div className="flex flex-col gap-3">
             <button
+              onClick={switchToMockMode}
+              className="w-full rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 transition-all duration-200 shadow-[0_0_24px_rgba(59,130,246,0.2)] hover:shadow-[0_0_32px_rgba(59,130,246,0.3)] cursor-pointer text-sm"
+            >
+              {lang === "id" ? "Gunakan Mode Simulasi (Teks)" : "Use Simulation Mode (Text)"}
+            </button>
+            <button
               onClick={onGoBack}
-              className="w-full rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold py-3 transition-all"
+              className="w-full rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold py-3 transition-all text-sm cursor-pointer"
             >
               {lang === "id" ? "← Kembali ke Pemilihan Skenario" : "← Back to Scenario Selection"}
             </button>
-            <Link
-              href="/roleplay"
-              className="w-full rounded-xl border border-blue-400/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 font-semibold py-3 transition-all text-center"
-            >
-              {lang === "id" ? "Gunakan Mode Teks" : "Use Text Mode Instead"}
-            </Link>
           </div>
         </div>
       </div>
