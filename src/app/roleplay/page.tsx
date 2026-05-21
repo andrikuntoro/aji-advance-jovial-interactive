@@ -122,7 +122,7 @@ function RoleplayContent() {
         setMessages([
           createMessage(
             "ai_client",
-            getOpeningGreeting(scenario.type, lang, activePersonaName),
+            getOpeningGreeting(scenario.type, lang, activePersonaName, currentCustomContext),
             data.sessionId
           ),
         ]);
@@ -132,7 +132,7 @@ function RoleplayContent() {
         setSessionId(fallbackId);
         const activePersonaName = currentCustomContext?.persona?.name ?? DEFAULT_PERSONA.name;
         setMessages([
-          createMessage("ai_client", getOpeningGreeting(scenario.type, lang, activePersonaName), fallbackId),
+          createMessage("ai_client", getOpeningGreeting(scenario.type, lang, activePersonaName, currentCustomContext), fallbackId),
         ]);
       }
     }
@@ -434,22 +434,49 @@ const PERSONA_OCCUPATION: Record<"en" | "id", string> = {
 function getOpeningGreeting(
   type: "appointment_setting" | "fact_finding" | "product_pitch",
   lang: "en" | "id" = "en",
-  personaName: string = "Tsing Lu"
+  personaName: string = "Tsing Lu",
+  customContext?: any
 ): string {
+  const cp = customContext?.persona;
+  const style = (cp?.personalityCommunicationStyle || "").toLowerCase();
+  const traits = (cp?.personalityTraits || "").toLowerCase();
+  const isFriendly = style.includes("soft") || style.includes("ramah") || style.includes("sopan") || 
+                     style.includes("bersahabat") || style.includes("tenang") || style.includes("humble") || 
+                     style.includes("relaxed") || style.includes("santai") || style.includes("friendly") ||
+                     traits.includes("patient") || traits.includes("ramah") || traits.includes("humble");
+
   if (lang === "id") {
     if (type === "appointment_setting") {
+      if (isFriendly) {
+        return `Halo, selamat siang. Dengan ${personaName} di sini. Maaf, ada yang bisa saya bantu?`;
+      }
       return `${personaName} di sini. Saya hanya punya beberapa menit — ini ada keperluan apa?`;
     }
     if (type === "fact_finding") {
+      if (isFriendly) {
+        return "Halo. Senang bisa berbicara dengan Anda lagi. Ada yang ingin didiskusikan hari ini?";
+      }
       return "Halo. Saya bisa bicara sebentar, tapi mohon langsung ke intinya. Ada keperluan apa?";
+    }
+    if (isFriendly) {
+      return "Halo. Saya siap mendengarkan penjelasan Anda. Silakan disampaikan.";
     }
     return "Halo. Saya akan mendengarkan, tapi tolong yang relevan — saya tidak tertarik dengan penawaran yang terlalu umum.";
   }
   if (type === "appointment_setting") {
+    if (isFriendly) {
+      return `Hello, good day. This is ${personaName} speaking. How can I help you today?`;
+    }
     return `${personaName} here. I only have a few minutes — what is this call about?`;
   }
   if (type === "fact_finding") {
+    if (isFriendly) {
+      return "Hello. Good to speak with you again. What would you like to discuss today?";
+    }
     return "Hello. I have a moment to talk, but I prefer practical, direct conversations. What is this about?";
+  }
+  if (isFriendly) {
+    return "Hello. I'm ready to listen to your proposal. Please go ahead.";
   }
   return "Hello. I'll listen, but please keep it relevant — I'm not interested in a generic pitch.";
 }
