@@ -56,6 +56,7 @@ function RoleplayContent() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionPersisted, setSessionPersisted] = useState(false);
   const sessionInitialized = useRef(false);
+  const [customContext, setCustomContext] = useState<any>(null);
 
   // ── Conversation state ─────────────────────────────────────
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -78,7 +79,20 @@ function RoleplayContent() {
     sessionInitialized.current = true;
 
     async function init() {
+      let currentCustomContext: any = null;
       try {
+        try {
+          const contextRes = await fetch("/api/admin/context");
+          if (contextRes.ok) {
+            currentCustomContext = await contextRes.json();
+            setCustomContext(currentCustomContext);
+          }
+        } catch (contextErr) {
+          console.error("Failed to fetch custom context in roleplay", contextErr);
+        }
+
+        const activePersonaName = currentCustomContext?.persona?.name ?? DEFAULT_PERSONA.name;
+
         const res = await fetch("/api/sessions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -108,7 +122,7 @@ function RoleplayContent() {
         setMessages([
           createMessage(
             "ai_client",
-            getOpeningGreeting(scenario.type, lang),
+            getOpeningGreeting(scenario.type, lang, activePersonaName),
             data.sessionId
           ),
         ]);
@@ -116,8 +130,9 @@ function RoleplayContent() {
         console.error("Failed to initialize session", err);
         const fallbackId = `local-${crypto.randomUUID()}`;
         setSessionId(fallbackId);
+        const activePersonaName = currentCustomContext?.persona?.name ?? DEFAULT_PERSONA.name;
         setMessages([
-          createMessage("ai_client", getOpeningGreeting(scenario.type, lang), fallbackId),
+          createMessage("ai_client", getOpeningGreeting(scenario.type, lang, activePersonaName), fallbackId),
         ]);
       }
     }
@@ -265,6 +280,7 @@ function RoleplayContent() {
 
   // ── Loading state ──────────────────────────────────────────
   if (!sessionId) {
+    const activePersonaName = customContext?.persona?.name ?? DEFAULT_PERSONA.name;
     return (
       <div className="space-y-5">
         <Card>
@@ -275,12 +291,16 @@ function RoleplayContent() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-blue-100/90">{t("roleplay.preparing", { scenario: scenario.title, persona: DEFAULT_PERSONA.name })}</p>
+            <p className="text-sm text-blue-100/90">{t("roleplay.preparing", { scenario: scenario.title, persona: activePersonaName })}</p>
           </CardContent>
         </Card>
       </div>
     );
   }
+
+  const activePersonaName = customContext?.persona?.name ?? DEFAULT_PERSONA.name;
+  const activePersonaOccupation = customContext?.persona?.occupation ?? personaOccupation;
+  const activePersonaAge = customContext?.persona?.age ?? DEFAULT_PERSONA.age;
 
   return (
     <div className="space-y-5">
@@ -306,10 +326,10 @@ function RoleplayContent() {
         <Card>
           <CardHeader>
             <p className="text-sm text-blue-200/80">{t("roleplay.clientPersona")}</p>
-            <h2 className="text-lg font-semibold text-white">{DEFAULT_PERSONA.name}</h2>
+            <h2 className="text-lg font-semibold text-white">{activePersonaName}</h2>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-blue-100/90">
-            <p>{personaOccupation} · {DEFAULT_PERSONA.age}</p>
+            <p>{activePersonaOccupation} · {activePersonaAge}</p>
 
             {/* Stage badge — debug only */}
             {debugMode && (
@@ -413,11 +433,12 @@ const PERSONA_OCCUPATION: Record<"en" | "id", string> = {
 
 function getOpeningGreeting(
   type: "appointment_setting" | "fact_finding" | "product_pitch",
-  lang: "en" | "id" = "en"
+  lang: "en" | "id" = "en",
+  personaName: string = "Tsing Lu"
 ): string {
   if (lang === "id") {
     if (type === "appointment_setting") {
-      return "Tsing Lu di sini. Saya hanya punya beberapa menit — ini ada keperluan apa?";
+      return `${personaName} di sini. Saya hanya punya beberapa menit — ini ada keperluan apa?`;
     }
     if (type === "fact_finding") {
       return "Halo. Saya bisa bicara sebentar, tapi mohon langsung ke intinya. Ada keperluan apa?";
@@ -425,7 +446,7 @@ function getOpeningGreeting(
     return "Halo. Saya akan mendengarkan, tapi tolong yang relevan — saya tidak tertarik dengan penawaran yang terlalu umum.";
   }
   if (type === "appointment_setting") {
-    return "Tsing Lu here. I only have a few minutes — what is this call about?";
+    return `${personaName} here. I only have a few minutes — what is this call about?`;
   }
   if (type === "fact_finding") {
     return "Hello. I have a moment to talk, but I prefer practical, direct conversations. What is this about?";

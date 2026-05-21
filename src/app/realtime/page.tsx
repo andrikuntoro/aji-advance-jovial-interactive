@@ -438,6 +438,22 @@ function RealtimeContent() {
   const [view, setView] = useState<"selector" | "session">("selector");
   const { startSession } = useRealtimeSession();
   const { connectionState, reset } = useRealtimeStore();
+  const [customContext, setCustomContext] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchContext() {
+      try {
+        const res = await fetch("/api/admin/context");
+        if (res.ok) {
+          const data = await res.json();
+          setCustomContext(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch custom context", err);
+      }
+    }
+    void fetchContext();
+  }, []);
 
   const handleStart = useCallback(
     async (config: RealtimeSessionConfig) => {
@@ -456,10 +472,10 @@ function RealtimeContent() {
 
   // If error state, ActiveSession handles the back button
   if (view === "selector") {
-    return <ScenarioSelector onStart={handleStart} />;
+    return <ScenarioSelector onStart={handleStart} customContext={customContext} />;
   }
 
-  return <ActiveSession onGoBack={handleGoBack} />;
+  return <ActiveSession onGoBack={handleGoBack} customContext={customContext} />;
 }
 
 export default function RealtimePage() {
