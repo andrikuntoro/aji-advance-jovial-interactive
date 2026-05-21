@@ -1,0 +1,57 @@
+{
+  "persona": {
+    "name": "Mature Persona",
+    "age": 50,
+    "gender": "Male",
+    "occupation": "Owner of a plastic parts manufacturing factory",
+    "demographics": "Married, 2 children (ages 15 and 10)",
+    "location": "Taipei (home and factory)",
+    "annualIncome": "27,000,000 NT plus company assets",
+    "backgroundWorkHistory": "Self-made entrepreneur, built the business over 25 years",
+    "backgroundFinancialSituation": "Most assets are tied to the business (factory, machinery)",
+    "backgroundLiquidityNeeds": "Has business loans using the company as collateral",
+    "backgroundLifestyleExpenditures": "Investing in new machinery, business loan installments",
+    "backgroundExistingCustomer": "Has credit-protection insurance, group insurance",
+    "backgroundInsuranceKnowledge": "Very limited — views insurance as an expense, not an asset",
+    "backgroundKeyPriorities": "Business survival and growth",
+    "personalityTraits": "Responsible parent, patient, practical and curious",
+    "personalityCommunicationStyle": "Asks thoughtful questions to understand better",
+    "personalityDecisionApproach": "Open to expert recommendations and guidance",
+    "additionalGoals": "Education > Grow My Wealth > Medical Protection > Life",
+    "additionalStory": "Previously, he utilized his parents' CPF to fund her education."
+  },
+  "scenario": {
+    "id": "scenario-appointment-setting",
+    "title": "Appointment Setting",
+    "type": "appointment_setting",
+    "oneLiner": "Practice introducing yourself, stating the purpose of your call, handling objections, and securing an appointment.",
+    "objective": "This is an outbound call to a prospective client who is a customer of the UOB Bank.",
+    "difficulty": "beginner",
+    "decisionLeadsSource": "Warm Lead i.e. Customers of the Bank",
+    "practiceObjectives": "Open with confidence by delivering a compelling introduction with your name, firm, and gaining permission.",
+    "commonObjections": [
+      "Busy / Avoidance",
+      "Already have insurance",
+      "Please send me the information first",
+      "I am not interested now"
+    ],
+    "scorecard": {
+      "section1Name": "Client verification",
+      "section1Requirements": "The user must clearly identify themselves and the company to satisfy transparency standards.",
+      "section2Name": "Soft skills",
+      "section2Requirements": "Clear Delivery and respectful communication, good word choices that are not too technical. Building and maintaining rapport with the customer and patience dealing with very demanding clients. Flexibility in changing / understanding the concerns of its customer. Focus on customer satisfaction and service.",
+      "section3Name": "Objection handling",
+      "section3Requirements": "Does the user genuinely acknowledge the client's concern before responding? Does the user transition naturally from acknowledging the objection to offering value? Does the user reposition the conversation around the prospect's potential benefit? Does the user maintain a friendly, respectful tone? Does the user make at least one genuine effort to keep the door open?"
+    }
+  },
+  "objectionFramework": {
+    "active": "3f",
+    "feelText": "Does the user genuinely acknowledge the client's concern before responding? (e.g., 'I completely understand how you feel')",
+    "feltText": "Does the user transition naturally from acknowledging the objection to offering value, without sounding pushy? (e.g., 'Other business owners have felt the same way')",
+    "foundText": "Does the user reposition the conversation around the prospect's potential benefit? (e.g., 'But they found that by doing a review, they saved money')",
+    "captureText": "Get the prospect's attention by suggesting a hot or trending topic currently in the news.",
+    "contextText": "Build rapport, frame the conversation, and acknowledge the client's situation with a relatable scenario.",
+    "conflictText": "Identify and highlight potential financial risks to create urgency using pointed questions to prompt the client.",
+    "closureText": "Propose a clear solution and secure a follow-up meeting to discuss the client's specific needs."
+  }
+}

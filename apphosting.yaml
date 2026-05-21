@@ -1,0 +1,11 @@
+# apphosting.yaml
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+
+env:
+  - variable: OPENAI_API_KEY
+    secret: openai_api_key
