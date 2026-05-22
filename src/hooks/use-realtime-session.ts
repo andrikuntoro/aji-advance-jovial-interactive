@@ -306,6 +306,9 @@ export function useRealtimeSession() {
     }
     store.setMockMode(true);
     store.setError(null);
+    store.setAiSpeaking(false);
+    store.setUserSpeaking(false);
+    store.setMuted(false);
     store.setConnectionState("active");
     startTimer();
     startInactivityWatcher();
