@@ -22,26 +22,16 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    // Simulate authenticating
     setTimeout(() => {
       const trimmedEmail = email.trim().toLowerCase();
-      
-      // Load registered users list
-      const registeredList = JSON.parse(localStorage.getItem("aji_registered_users") || "[]");
-      const isCustomMember = registeredList.some((u: any) => u.email === trimmedEmail);
       
       if (trimmedEmail === "admin@aji.com" && password === "admin123") {
         localStorage.setItem("aji_user", JSON.stringify({ email: trimmedEmail, role: "superadmin" }));
         router.push("/admin");
-      } else if (
-        (trimmedEmail === "member@aji.com" && password === "member123") ||
-        isCustomMember
-      ) {
-        localStorage.setItem("aji_user", JSON.stringify({ email: trimmedEmail, role: "member" }));
-        window.location.href = `${FRONTEND_URL}/dashboard`;
       } else {
-        setError("Kredensial tidak valid. Silakan gunakan email terdaftar Anda.");
-        setIsLoading(false);
+        // Automatically route to Frontend if they are trying to login as member
+        // Also inform them that members login via the frontend portal
+        window.location.href = `${FRONTEND_URL}/login?email=${encodeURIComponent(trimmedEmail)}`;
       }
     }, 800);
   };
@@ -51,8 +41,8 @@ export default function LoginPage() {
       <div className="mx-auto max-w-md py-12">
         <Card className="border border-white/10 bg-slate-950/60 backdrop-blur-md">
           <CardHeader>
-            <p className="text-sm text-blue-300 font-semibold uppercase tracking-wider">{t("login.eyebrow")}</p>
-            <h1 className="text-3xl font-extrabold text-white mt-1">{t("login.title")}</h1>
+            <p className="text-sm text-blue-300 font-semibold uppercase tracking-wider">PORTAL SUPERADMIN</p>
+            <h1 className="text-3xl font-extrabold text-white mt-1">Masuk Dashboard</h1>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -68,7 +58,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@aji.com atau member@aji.com"
+                  placeholder="admin@aji.com"
                   className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-2.5 text-sm text-white outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
                   required
                 />
@@ -93,13 +83,22 @@ export default function LoginPage() {
                       <span>Memproses...</span>
                     </div>
                   ) : (
-                    t("login.submit")
+                    "Masuk Admin"
                   )}
                 </Button>
                 
-                <div className="flex justify-between items-center text-xs text-blue-200/60 mt-1">
-                  <span>Superadmin: admin@aji.com (admin123)</span>
-                  <span>Member: member@aji.com (member123)</span>
+                <div className="flex flex-col items-center gap-2 mt-4">
+                  <div className="text-xs text-blue-200/60">
+                    Akses Member / Pendaftaran AAJI?
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    className="w-full text-xs py-2 border-blue-500/30 hover:bg-blue-500/10 text-blue-300"
+                    onClick={() => window.location.href = `${FRONTEND_URL}/login`}
+                  >
+                    Masuk Portal Member
+                  </Button>
                 </div>
               </div>
             </form>
