@@ -85,12 +85,18 @@ export function AvatarRenderer({
               HeyGen Stream
             </div>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-              {/* Custom avatar placeholder — stylized dynamic initials */}
-              <div className="flex flex-col items-center gap-1">
-                <div className="text-5xl font-bold text-white/90 tracking-tight">{initials}</div>
-                <div className="text-xs text-blue-300/80 tracking-widest uppercase">{personaName}</div>
-              </div>
+            <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+              {personaName?.toLowerCase().includes("young professional") ? (
+                <img src="/avatar_young.png" alt="Young Professional" className="w-full h-full object-cover" />
+              ) : personaName?.toLowerCase().includes("mature") ? (
+                <img src="/avatar_mature.png" alt="Mature Persona" className="w-full h-full object-cover" />
+              ) : (
+                /* Custom avatar placeholder — stylized dynamic initials */
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-5xl font-bold text-white/90 tracking-tight">{initials}</div>
+                  <div className="text-xs text-blue-300/80 tracking-widest uppercase">{personaName}</div>
+                </div>
+              )}
             </div>
           )}
 
