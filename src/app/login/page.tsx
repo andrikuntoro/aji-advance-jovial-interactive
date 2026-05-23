@@ -26,14 +26,21 @@ export default function LoginPage() {
     setTimeout(() => {
       const trimmedEmail = email.trim().toLowerCase();
       
+      // Load registered users list
+      const registeredList = JSON.parse(localStorage.getItem("aji_registered_users") || "[]");
+      const isCustomMember = registeredList.some((u: any) => u.email === trimmedEmail);
+      
       if (trimmedEmail === "admin@aji.com" && password === "admin123") {
         localStorage.setItem("aji_user", JSON.stringify({ email: trimmedEmail, role: "superadmin" }));
         router.push("/admin");
-      } else if (trimmedEmail === "member@aji.com" && password === "member123") {
+      } else if (
+        (trimmedEmail === "member@aji.com" && password === "member123") ||
+        isCustomMember
+      ) {
         localStorage.setItem("aji_user", JSON.stringify({ email: trimmedEmail, role: "member" }));
         window.location.href = `${FRONTEND_URL}/dashboard`;
       } else {
-        setError("Kredensial tidak valid. Silakan gunakan admin@aji.com atau member@aji.com.");
+        setError("Kredensial tidak valid. Silakan gunakan email terdaftar Anda.");
         setIsLoading(false);
       }
     }, 800);
