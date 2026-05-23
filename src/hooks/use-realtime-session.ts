@@ -136,11 +136,12 @@ export function useRealtimeSession() {
 
       // ── MOCK MODE — no API key, run text simulation ────
       if (data.mode === "mock" || !data.ephemeralToken) {
-        store.setMockMode(true);
-        store.setConnectionState("active");
-        startTimer();
-        sendOpeningGreeting();
-        startInactivityWatcher();
+        if (data.warning) {
+          store.setError(data.warning);
+        } else {
+          store.setError("OPENAI_API_KEY is not configured on the server. Live voice mode requires a valid OpenAI API key.");
+        }
+        store.setConnectionState("error");
         return;
       }
 
@@ -311,8 +312,9 @@ export function useRealtimeSession() {
     store.setMuted(false);
     store.setConnectionState("active");
     startTimer();
+    sendOpeningGreeting();
     startInactivityWatcher();
-  }, [store, startTimer, startInactivityWatcher]);
+  }, [store, startTimer, sendOpeningGreeting, startInactivityWatcher]);
 
   // ── End session ────────────────────────────────────────
   const endSession = useCallback(async () => {
