@@ -136,12 +136,16 @@ export function useRealtimeSession() {
 
       // ── MOCK MODE — no API key, run text simulation ────
       if (data.mode === "mock" || !data.ephemeralToken) {
-        if (data.warning) {
-          store.setError(data.warning);
-        } else {
-          store.setError("OPENAI_API_KEY is not configured on the server. Live voice mode requires a valid OpenAI API key.");
-        }
-        store.setConnectionState("error");
+        console.warn("Falling back to mock mode. Reason:", data.warning || "No token");
+        store.setMockMode(true);
+        store.setError(null); // Clear the error so it doesn't block UI
+        store.setAiSpeaking(false);
+        store.setUserSpeaking(false);
+        store.setMuted(false);
+        store.setConnectionState("active");
+        startTimer();
+        sendOpeningGreeting();
+        startInactivityWatcher();
         return;
       }
 
